@@ -35,15 +35,18 @@ func (c *Client) GetCredentials(ctx context.Context, image string, args []string
 			registry.InstanceId = instanceId
 		}
 		creds, err = client.getCredentials(registry.InstanceId)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		client, err := newPersonClient(registry.Region)
 		if err != nil {
 			return nil, err
 		}
 		creds, err = client.getCredentials()
-	}
-	if err != nil {
-		return nil, err
+		if err != nil {
+			return nil, err
+		}
 	}
 	cacheDuration := getCacheDuration(&creds.ExpireTime)
 	return &v1.CredentialProviderResponse{
